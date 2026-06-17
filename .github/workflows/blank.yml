@@ -6,11 +6,23 @@ jobs:
   start-node:
     runs-on: ubuntu-latest
     steps:
-      # 1. Скачиваем и устанавливаем Tailscale
       - name: Install Tailscale
         run: curl -fsSL https://tailscale.com/install.sh | sh
 
-      # 2. Подключаем к сети, используя секрет из настроек репозитория
+      # Добавленный шаг: удаление старой машины с таким же именем
+      - name: Cleanup old machine
+        run: |
+          # Используем API для поиска и удаления машины по имени
+          # ВАЖНО: вам понадобится TAILSCALE_API_KEY в Secrets
+          curl -X DELETE "https://api.tailscale.com/api/v2/tailnet/YOUR_TAILNET/devices/github-vps" \
+          -u "${{ secrets.TAILSCALE_API_KEY }}:" || echo "Старая машина не найдена, продолжаем..."
+
+      - name: Configure IP Forwarding
+        run: |
+          echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+          echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+          sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+
       - name: Start Tailscale
         run: |
           sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTHKEY }} \
@@ -18,6 +30,5 @@ jobs:
                            --accept-routes \
                            --hostname=github-vps
 
-      # 3. Держим сессию открытой для управления
       - name: Start SSH
         uses: mxschmitt/action-tmate@v3

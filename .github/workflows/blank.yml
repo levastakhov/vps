@@ -14,7 +14,7 @@ jobs:
         run: |
           # Используем API для поиска и удаления машины по имени
           # ВАЖНО: вам понадобится TAILSCALE_API_KEY в Secrets
-          curl -X DELETE "https://api.tailscale.com/api/v2/tailnet/YOUR_TAILNET/devices/github-vps" \
+          curl -X DELETE "https://api.tailscale.com/api/v2/tailnet/-/devices/github-vps" \
           -u "${{ secrets.TAILSCALE_API_KEY }}:" || echo "Старая машина не найдена, продолжаем..."
 
       - name: Configure IP Forwarding

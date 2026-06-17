@@ -1,0 +1,17 @@
+name: Simple SSH Tunnel
+
+on: workflow_dispatch
+
+jobs:
+  ssh-tunnel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Просто запускаем tmate, он сам поднимет SSH-туннель
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          # Ограничиваем доступ только вашим GitHub-аккаунтом для безопасности
+          limit-access-to-actor: true

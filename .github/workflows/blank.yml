@@ -1,10 +1,22 @@
-name: VPS
+name: VPS Tailscale
 
 on: workflow_dispatch
 
 jobs:
-  build:
+  start-node:
     runs-on: ubuntu-latest
     steps:
+      # 1. Скачиваем и устанавливаем Tailscale
+      - name: Install Tailscale
+        run: curl -fsSL https://tailscale.com/install.sh | sh
+
+      # 2. Подключаем к сети, используя секрет из настроек репозитория
+      - name: Start Tailscale
+        run: |
+          sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTHKEY }} \
+                           --advertise-exit-node \
+                           --accept-routes
+
+      # 3. Держим сессию открытой для управления
       - name: Start SSH
         uses: mxschmitt/action-tmate@v3

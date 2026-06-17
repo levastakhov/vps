@@ -15,7 +15,8 @@ jobs:
         run: |
           sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTHKEY }} \
                            --advertise-exit-node \
-                           --accept-routes
+                           --accept-routes \
+                           --hostname=github-vps
 
       # 3. Держим сессию открытой для управления
       - name: Start SSH

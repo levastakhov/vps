@@ -1,10 +1,19 @@
-name: SSH
+name: VPS Tailscale
 
 on: workflow_dispatch
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
+  start-node:
+    runs-on: ubuntu-latest
     steps:
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      # 1. Скачиваем и устанавливаем Tailscale
+      - name: Install Tailscale
+        run: curl -fsSL https://tailscale.com/install.sh | sh
+
+      # 2. Подключаем к сети, используя секрет из настроек репозитория
+      - name: Start Tailscale
+        run: |
+          sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTHKEY }} \
+                           --advertise-exit-node \
+                           --accept-routes \
+                           --hostname=github-vps

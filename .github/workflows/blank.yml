@@ -21,8 +21,7 @@ jobs:
             --authkey="$TS_AUTHKEY" \
             --advertise-exit-node \
             --accept-routes \
-            --hostname=github-vps \
-            --ephemeral
+            --hostname=github-vps
 
       - name: Keep job alive
         run: |

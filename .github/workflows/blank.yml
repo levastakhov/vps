@@ -6,5 +6,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Start SSH via tmate
-        uses: mxschmitt/action-tmate@v3
+      - name: Install tmate
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tmate
+
+      - name: Start SSH via tmate manually
+        run: |
+          tmate -k > tmate.log 2>&1 &
+          echo "Waiting for tmate session to establish..."
+          sleep 5
+          cat tmate.log
+          
+      - name: Keep session alive
+        run: |
+          echo "Session is running. Waiting..."
+          sleep 3600

@@ -22,6 +22,7 @@ jobs:
             --advertise-exit-node \
             --accept-routes \
             --hostname=github-vps
+            --ephemeral
 
       - name: Keep job alive
         run: |

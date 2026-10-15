@@ -1,23 +1,29 @@
 name: VPS Tailscale
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
-jobs:
-  start-node:
-    runs-on: ubuntu-latest
-    steps:
-      # 1. Скачиваем и устанавливаем Tailscale
-      - name: Install Tailscale
-        run: curl -fsSL https://tailscale.com/install.sh | sh
-
-      # 2. Подключаем к сети, используя секрет из настроек репозитория
-      - name: Start Tailscale
-        run: |
-          sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTHKEY }} \
-                           --advertise-exit-node \
-                           --accept-routes \
-                           --hostname=github-vps
 jobs:
   start-node:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+
+    steps:
+      - name: Install Tailscale
+        run: |
+          curl -fsSL https://tailscale.com/install.sh | sh
+
+      - name: Start Tailscale
+        env:
+          TS_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
+        run: |
+          sudo tailscale up \
+            --authkey="$TS_AUTHKEY" \
+            --advertise-exit-node \
+            --accept-routes \
+            --hostname=github-vps
+
+      - name: Keep job alive
+        run: |
+          echo "Tailscale is running"
+          sleep 3300

@@ -6,7 +6,7 @@ on:
 jobs:
   start-node:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 360
 
     steps:
       - name: Install Tailscale
@@ -26,4 +26,8 @@ jobs:
       - name: Keep job alive
         run: |
           echo "Tailscale is running"
-          sleep 3300
+          sleep 21600
+
+      - name: Stop Tailscale
+        if: always()
+        run: sudo tailscale logout

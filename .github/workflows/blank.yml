@@ -17,3 +17,7 @@ jobs:
                            --advertise-exit-node \
                            --accept-routes \
                            --hostname=github-vps
+jobs:
+  start-node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
